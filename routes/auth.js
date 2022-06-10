@@ -3,7 +3,6 @@ var router = express.Router();
 const MySql = require("../routes/utils/MySql");
 const DButils = require("../routes/utils/DButils");
 const bcrypt = require("bcrypt");
-var id_user
 
 router.post("/Register", async (req, res, next) => {
   try {
@@ -59,7 +58,11 @@ router.post("/Login", async (req, res, next) => {
     }
 
     // Set cookie
+    console.log("login user id:");
+    console.log(user.user_id);
+    console.log(user);
     req.session.user_id = user.user_id;
+    req.session.username = user.username;
 
 
     // return cookie
@@ -69,9 +72,18 @@ router.post("/Login", async (req, res, next) => {
   }
 });
 
+
+//TODO: check it.
 router.post("/Logout", function (req, res) {
-  req.session.reset(); // reset the session info --> send cookie when  req.session == undefined!!
-  res.send({ success: true, message: "logout succeeded" });
+  if (req.session && req.body.username !=req.session.username){
+    throw { status: 401, message: "Username has not logged in" }; //req.session defined but login diferent user.
+  }
+  else{
+    console.log("logout user id:");
+    console.log(req.body.username);
+    req.session.reset(); // reset the session info --> send cookie when  req.session == undefined!!
+    res.send({ success: true, message: "logout succeeded" });
+  }
 });
 
 module.exports = router;
