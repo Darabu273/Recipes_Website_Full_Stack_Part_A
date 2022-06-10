@@ -7,7 +7,7 @@
     "start": "node main.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "Dar Abu and Ido Hershko",
   "license": "ISC",
   "dependencies": {
     "axios": "^0.19.2",
