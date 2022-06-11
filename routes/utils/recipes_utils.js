@@ -47,17 +47,7 @@ async function getRecipeDetails(recipe_id) {
         instructions: instructions,
         
     }
-}
-
-async function getRecipeIngredients(recipe_id) {
-    let recipe_info = await getIngredientsInformation(recipe_id);
-    let { ingredients } = recipe_info.data;
-
-    return {
-        ingredients: ingredients,
-        
-    }
-}
+  }
 
     function getSpecificDataFromRecipee(recipee) {
         let {
