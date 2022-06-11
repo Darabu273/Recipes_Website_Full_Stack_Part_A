@@ -4,9 +4,12 @@ const recipes_utils = require("./utils/recipes_utils");
 
 router.get("/", (req, res) => res.send("im here"));
 
-/**
- * This path returns a full details of a recipe by its id
- */
+/* This path returns a full details of a recipe by its id:
+ * - Details of preview details
+ * - recipe's ingredient list
+ * - number of servings
+ * - instructions
+ * */
 router.get("/:recipeId", async (req, res, next) => {
   try {
     const recipe = await recipes_utils.getRecipeDetails(req.params.recipeId);

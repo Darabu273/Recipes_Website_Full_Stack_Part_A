@@ -3,7 +3,6 @@ var router = express.Router();
 const MySql = require("../routes/utils/MySql");
 const DButils = require("../routes/utils/DButils");
 const bcrypt = require("bcrypt");
-var id_user;
 
 router.post("/Register", async (req, res, next) => {
   try {
@@ -75,7 +74,7 @@ router.post("/Login", async (req, res, next) => {
 //TODO: check it.
 router.post("/Logout", function (req, res) {
   if (req.session && req.body.username != req.session.username) {
-    throw { status: 401, message: "Username has not logged in" }; //req.session defined but login diffrent user.
+    throw { status: 401, message: "Username has not logged in" }; //req.session defined but login diferent user.
   } else {
     console.log("logout user id:");
     console.log(req.body.username);

@@ -16,9 +16,17 @@ async function getRecipeInformation(recipe_id) {
   });
 }
 
+async function getIngredientsInformation(recipe_id) {
+  return await axios.get(`${api_domain}/${recipe_id}/ingredientWidget.json`, {
+    params: {
+      apiKey: process.env.spooncular_apiKey,
+    },
+  });
+}
+
 async function getRecipeDetails(recipe_id) {
   let recipe_info = await getRecipeInformation(recipe_id);
-
+  let recipe_ingred = await getIngredientsInformation(recipe_id);
   let {
     id,
     title,
@@ -28,7 +36,10 @@ async function getRecipeDetails(recipe_id) {
     vegan,
     vegetarian,
     glutenFree,
+    servings,
+    instructions,
   } = recipe_info.data;
+  let { ingredients } = recipe_ingred.data;
 
   return {
     id: id,
@@ -39,6 +50,18 @@ async function getRecipeDetails(recipe_id) {
     vegan: vegan,
     vegetarian: vegetarian,
     glutenFree: glutenFree,
+    ingredients: ingredients,
+    servings: servings,
+    instructions: instructions,
+  };
+}
+
+async function getRecipeIngredients(recipe_id) {
+  let recipe_info = await getIngredientsInformation(recipe_id);
+  let { ingredients } = recipe_info.data;
+
+  return {
+    ingredients: ingredients,
   };
 }
 
