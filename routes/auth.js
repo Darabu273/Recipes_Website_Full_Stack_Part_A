@@ -59,10 +59,8 @@ router.post("/Login", async (req, res, next) => {
 
     // Set cookie
     console.log("login user id:");
-    console.log(user.user_id);
-    console.log(user);
     req.session.user_id = user.user_id;
-    req.session.username = user.username;
+    console.log(req.session.user_id);
 
     // return cookie
     res.status(200).send({ message: "login succeeded", success: true });
@@ -71,16 +69,13 @@ router.post("/Login", async (req, res, next) => {
   }
 });
 
-//TODO: check it.
-router.post("/Logout", function (req, res) {
-  if (req.session && req.body.username != req.session.username) {
-    throw { status: 401, message: "Username has not logged in" }; //req.session defined but login diferent user.
-  } else {
-    console.log("logout user id:");
-    console.log(req.body.username);
-    req.session.reset(); // reset the session info --> send cookie when  req.session == undefined!!
-    res.send({ success: true, message: "logout succeeded" });
-  }
+/** We will check the logout from the client side. 
+ * Only when a user has logged in will he be able to logout after.
+ */
+ router.post("/Logout", function (req, res) {
+  req.session.reset(); // reset the session info --> send cookie when  req.session == undefined!!
+  res.send({ success: true, message: "logout succeeded" });
+
 });
 
 module.exports = router;
