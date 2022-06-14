@@ -1,14 +1,14 @@
 ## Assignment3.2 - Backend
 
-## authors
-ido hersko - 204809867
+## Authors
+ido Hersk - 204809867
 
 Dar Abu - 316294032
 
-## documentation
+## Documentation
 The project is documented by the Swagger : https://app.swaggerhub.com/apis-docs/idohersko/API3_2/1.0.0
 
-## about
+## About
 The app relies on the Sponcular API, and mysql DB.
 
 To run the server on your local environment:
