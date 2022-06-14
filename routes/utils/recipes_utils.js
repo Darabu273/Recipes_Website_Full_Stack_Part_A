@@ -232,7 +232,7 @@ async function getRandomRecipeeDetails(numb, user_id) {
 // }
 
 
-function extractPreviewRecipeDetails(recipes_info) {
+ function extractPreviewRecipeDetails(recipes_info) {
     return recipes_info.map((recipe_info) => {
         //check the data type so it can work with diffrent types of data
         let data = recipe_info;
@@ -250,6 +250,26 @@ function extractPreviewRecipeDetails(recipes_info) {
             glutenFree,
             instructions,
         } = data;
+
+        // //check if this recipe is in favorite 
+        // //get the recipe id from the db
+        // array_of_favorite_db = await user_utils.getFavoriteRecipes(user_id);
+        // let array_of_favorite = [];
+        // //extracting the recipe ids into array
+        // array_of_favorite_db.map((element) => array_of_favorite.push(element.recipe_id)); 
+        // flagFavorite = checkIfIdInArray(id,array_of_favorite);
+        
+        // //get the recipe id from the db
+        // array_of_lastseen_db = await user_utils.getAllLastRecipee(user_id);
+        // let array_of_lastseen = [];
+        // //extracting the recipe ids into array
+        // array_of_lastseen_db.map((element) => array_of_lastseen.push(element.recipe_id)); 
+        // flagLastSeen = checkIfIdInArray(id,array_of_lastseen);
+  
+
+
+
+
         return {
             id: id,
             title: title,
@@ -260,11 +280,13 @@ function extractPreviewRecipeDetails(recipes_info) {
             vegetarian: vegetarian,
             glutenFree: glutenFree,
             instructions: instructions
+            // flagInFavorite : flagFavorite,
+            // flagInLastSeen : flagLastSeen
         }
     })
   }
 
-async function getRecipesPreview(recipes_ids_list) {
+async function getRecipesPreview(recipes_ids_list, user_id) {
     let promises = [];
     recipes_ids_list.map((id) => {
         promises.push(getRecipeInformation(id));
@@ -272,10 +294,10 @@ async function getRecipesPreview(recipes_ids_list) {
     let info_res = await Promise.all(promises);
     info_res.map((recp)=>{console.log(recp.data)});
     // console.log(info_res);
-    return extractPreviewRecipeDetails(info_res);
+    return getSpecificDataFromRecipee(info_res, user_id);
   }
 
-async function getSimilarRecipes(q, numtoReturn, cuisine, diet, intolerances) {
+async function getSimilarRecipes(q, numtoReturn, cuisine, diet, intolerances, user_id) {
     const test =  await axios.get(`${api_domain}/complexSearch`, {
         params: {
           query: q,
@@ -291,9 +313,16 @@ async function getSimilarRecipes(q, numtoReturn, cuisine, diet, intolerances) {
 
 
     Relevant_results.map((element) => recipes_id_array.push(element["id"])); //extracting the recipe ids into array
+    console.log(recipes_id_array)
 
-    let finalResult = getRecipesPreview(recipes_id_array);
-    return finalResult;
+    let recipee_details_list = [];
+    recipes_id_array.map((element) => recipee_details_list.push(getRecipePreviewFromRecipeId(element, user_id)));
+    result = Promise.all(recipee_details_list);
+
+
+
+    //let finalResult = getRecipesPreview(recipes_id_array, user_id);
+    return result;
 }
 
 
@@ -306,4 +335,4 @@ exports.getRandomRecipeeDetails = getRandomRecipeeDetails;
 exports.getSpecificDataFromRecipee = getSpecificDataFromRecipee;
 exports.getRecipePreviewFromRecipeId = getRecipePreviewFromRecipeId;
 exports.getSimilarRecipes = getSimilarRecipes;
-exports.getRecipePreviewFromRecipeId = getRecipePreviewFromRecipeId;
+// exports.getRecipePreviewFromRecipeId = getRecipePreviewFromRecipeId;

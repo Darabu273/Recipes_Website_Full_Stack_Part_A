@@ -36,8 +36,9 @@ router.get("/search", async (req, res, next) => {
     console.log(diet);
     intolerances = req.query.intolerances;
     console.log(intolerances);
+    user_id = req.session.user_id;
 
-    let finalResult = await recipes_utils.getSimilarRecipes(queryWords, numtoReturn, cuisine, diet, intolerances);
+    let finalResult = await recipes_utils.getSimilarRecipes(queryWords, numtoReturn, cuisine, diet, intolerances, user_id);
     res.status(200).send(finalResult);
 
   }
