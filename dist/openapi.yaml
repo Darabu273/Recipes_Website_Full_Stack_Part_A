@@ -20,7 +20,7 @@ tags:
 - name: recipes
   description: recipes functions to get information related to recipes.
 - name: user
-  description: perform actions of a logged-in user. his favorites, personal and family recipes.
+  description: perform actions of a logged-in user. his favorites, last seen, personal and family recipes.
 paths:
   /auth/Login:
     post:
@@ -70,6 +70,30 @@ paths:
                 example: session need to add exmple like bardugo
         "401":
           description: Username or Password incorrect
+  /auth/Register:
+    post:
+      tags:
+      - auth
+      summary: Register a new user to the system.
+      operationId: Register
+      requestBody:
+        description: logout as a user by passing credential
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/userLogin'
+      responses:
+        "200":
+          description: Register succeeded
+          headers:
+            Set-Cookie:
+              style: simple
+              explode: false
+              schema:
+                type: string
+                example: session = Rh5GCnsw5Ktu37JjSm2r
+        "401":
+          description: Username or password incrorrect
   /users/favorite:
     get:
       tags:

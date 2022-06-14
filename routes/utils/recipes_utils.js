@@ -87,7 +87,7 @@ async function getRecipePreviewFromRecipeId(recipe_id, user_id) {
       aggregateLikes,
       vegan,
       vegetarian,
-      glutenFree,
+      glutenFree
     } = recipe_info.data;
     
 
@@ -119,6 +119,56 @@ async function getRecipePreviewFromRecipeId(recipe_id, user_id) {
       flagInLastSeen : flagLastSeen
     };
   }
+
+
+  //this function get a preview from recipe_id
+async function getRecipePreviewandInstructionFromRecipeId(recipe_id, user_id) {
+  let recipe_info = await getRecipeInformation(recipe_id);
+  
+  
+  let {
+    id,
+    title,
+    readyInMinutes,
+    image,
+    aggregateLikes,
+    vegan,
+    vegetarian,
+    glutenFree,
+    instructions
+  } = recipe_info.data;
+  
+  
+
+  //check if this recipe is in favorite 
+  //get the recipe id from the db
+  array_of_favorite_db = await user_utils.getFavoriteRecipes(user_id);
+  let array_of_favorite = [];
+  //extracting the recipe ids into array
+  array_of_favorite_db.map((element) => array_of_favorite.push(element.recipe_id)); 
+  flagFavorite = checkIfIdInArray(id,array_of_favorite);
+  
+  //get the recipe id from the db
+  array_of_lastseen_db = await user_utils.getAllLastRecipee(user_id);
+  let array_of_lastseen = [];
+  //extracting the recipe ids into array
+  array_of_lastseen_db.map((element) => array_of_lastseen.push(element.recipe_id)); 
+  flagLastSeen = checkIfIdInArray(id,array_of_lastseen);
+
+  return {
+    id: id,
+    title: title,
+    readyInMinutes: readyInMinutes,
+    image: image,
+    popularity: aggregateLikes,
+    vegan: vegan,
+    vegetarian: vegetarian,
+    glutenFree: glutenFree,
+    instructions: instructions,
+    flagInFavorite : flagFavorite,
+    flagInLastSeen : flagLastSeen
+  };
+}
 
 
 //this function check if an id is in an array
@@ -316,7 +366,7 @@ async function getSimilarRecipes(q, numtoReturn, cuisine, diet, intolerances, us
     console.log(recipes_id_array)
 
     let recipee_details_list = [];
-    recipes_id_array.map((element) => recipee_details_list.push(getRecipePreviewFromRecipeId(element, user_id)));
+    recipes_id_array.map((element) => recipee_details_list.push(getRecipePreviewandInstructionFromRecipeId(element, user_id)));
     result = Promise.all(recipee_details_list);
 
 
