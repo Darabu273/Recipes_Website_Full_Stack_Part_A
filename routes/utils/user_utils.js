@@ -1,6 +1,45 @@
 const DButils = require("./DButils");
 const recipe_utils = require("./recipes_utils");
 
+
+async function markAsSeen(user_id, recipe_id) {
+  await DButils.execQuery(
+    `insert into mydb.lastrecipee values ('${user_id}','${recipe_id}',NOW())`
+  );
+}
+
+async function getAllLastRecipee(user_id) {
+    let arr = await DButils.execQuery(
+      `SELECT recipe_id FROM mydb.lastrecipee where user_id='${user_id}'`
+    );
+    return arr;
+}
+
+async function getLastRecipee(user_id, numb) {
+
+  let arr = await DButils.execQuery(
+    `SELECT recipe_id FROM mydb.lastrecipee where user_id=${user_id} ORDER BY date DESC LIMIT ${numb}`
+  );
+  return arr;
+}
+
+async function getLastRecipeeDetails(user_id, numb) {
+  //get last recepee
+  let recipes_id = await getLastRecipee(user_id, numb);
+  //get the ids of the last recepees
+  let recipes_id_array = [];
+  recipes_id.map((element) => recipes_id_array.push(element.recipe_id)); //extracting the recipe ids into array
+  //get the list of recepees from the list of ids
+  let recipee_last_list = [];
+  recipes_id_array.map((element) =>
+    recipee_last_list.push(recipe_utils.getRecipePreviewFromRecipeId(element, user_id))
+  );
+  result = Promise.all(recipee_last_list);
+
+  return result;
+}
+
+
 async function markAsFavorite(user_id, recipe_id) {
   await DButils.execQuery(
     `insert into mydb.favoriterecipee values ('${user_id}','${recipe_id}',NOW())`
@@ -78,3 +117,6 @@ exports.getFavoriteRecipeeDetails = getFavoriteRecipeeDetails;
 exports.getMyRecipeeDetails = getMyRecipeeDetails;
 exports.addPersonalRecipee = addPersonalRecipee;
 exports.getMyFamilyRecipeeDetails = getMyFamilyRecipeeDetails;
+exports.getLastRecipeeDetails = getLastRecipeeDetails;
+exports.getAllLastRecipee = getAllLastRecipee 
+exports.markAsSeen = markAsSeen;

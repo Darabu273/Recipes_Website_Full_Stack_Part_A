@@ -52,7 +52,7 @@ async function getRecipeDetails(recipe_id, user_id) {
   flagFavorite = checkIfIdInArray(id,array_of_favorite);
   
   //get the recipe id from the db
-  array_of_lastseen_db = await getAllLastRecipee(user_id);
+  array_of_lastseen_db = await user_utils.getAllLastRecipee(user_id);
   let array_of_lastseen = [];
   //extracting the recipe ids into array
   array_of_lastseen_db.map((element) => array_of_lastseen.push(element.recipe_id)); 
@@ -100,7 +100,7 @@ async function getRecipePreviewFromRecipeId(recipe_id, user_id) {
     flagFavorite = checkIfIdInArray(id,array_of_favorite);
     
     //get the recipe id from the db
-    array_of_lastseen_db = await getAllLastRecipee(user_id);
+    array_of_lastseen_db = await user_utils.getAllLastRecipee(user_id);
     let array_of_lastseen = [];
     //extracting the recipe ids into array
     array_of_lastseen_db.map((element) => array_of_lastseen.push(element.recipe_id)); 
@@ -153,7 +153,7 @@ async function getSpecificDataFromRecipee(recipee, user_id) {
   flagFavorite = checkIfIdInArray(id,array_of_favorite);
   
   //get the recipe id from the db
-  array_of_lastseen_db = await getAllLastRecipee(user_id);
+  array_of_lastseen_db = await user_utils.getAllLastRecipee(user_id);
   let array_of_lastseen = [];
   //extracting the recipe ids into array
   array_of_lastseen_db.map((element) => array_of_lastseen.push(element.recipe_id)); 
@@ -193,43 +193,43 @@ async function getRandomRecipeeDetails(numb, user_id) {
   return result;
 }
 
-async function markAsSeen(user_id, recipe_id) {
-  await DButils.execQuery(
-    `insert into mydb.lastrecipee values ('${user_id}','${recipe_id}',NOW())`
-  );
-}
+// async function markAsSeen(user_id, recipe_id) {
+//   await DButils.execQuery(
+//     `insert into mydb.lastrecipee values ('${user_id}','${recipe_id}',NOW())`
+//   );
+// }
 
-async function getAllLastRecipee(user_id) {
-    let arr = await DButils.execQuery(
-      `SELECT recipe_id FROM mydb.lastrecipee where user_id='${user_id}'`
-    );
-    return arr;
-}
+// async function getAllLastRecipee(user_id) {
+//     let arr = await DButils.execQuery(
+//       `SELECT recipe_id FROM mydb.lastrecipee where user_id='${user_id}'`
+//     );
+//     return arr;
+// }
 
-async function getLastRecipee(user_id, numb) {
+// async function getLastRecipee(user_id, numb) {
 
-  let arr = await DButils.execQuery(
-    `SELECT recipe_id FROM mydb.lastrecipee where user_id=${user_id} ORDER BY date DESC LIMIT ${numb}`
-  );
-  return arr;
-}
+//   let arr = await DButils.execQuery(
+//     `SELECT recipe_id FROM mydb.lastrecipee where user_id=${user_id} ORDER BY date DESC LIMIT ${numb}`
+//   );
+//   return arr;
+// }
 
-async function getLastRecipeeDetails(user_id, numb) {
-  //get last recepee
-  let recipes_id = await getLastRecipee(user_id, numb);
-  //get the ids of the last recepees
-  let recipes_id_array = [];
-  recipes_id.map((element) => recipes_id_array.push(element.recipe_id)); //extracting the recipe ids into array
-  //get the list of recepees from the list of ids
-  let recipee_last_list = [];
-  recipes_id_array.map((element) =>
-    recipee_last_list.push(getRecipePreviewFromRecipeId(element, user_id))
-  );
-  result = Promise.all(recipee_last_list);
-  console.log(result);
+// async function getLastRecipeeDetails(user_id, numb) {
+//   //get last recepee
+//   let recipes_id = await getLastRecipee(user_id, numb);
+//   //get the ids of the last recepees
+//   let recipes_id_array = [];
+//   recipes_id.map((element) => recipes_id_array.push(element.recipe_id)); //extracting the recipe ids into array
+//   //get the list of recepees from the list of ids
+//   let recipee_last_list = [];
+//   recipes_id_array.map((element) =>
+//     recipee_last_list.push(getRecipePreviewFromRecipeId(element, user_id))
+//   );
+//   result = Promise.all(recipee_last_list);
+//   console.log(result);
 
-  return result;
-}
+//   return result;
+// }
 
 
 function extractPreviewRecipeDetails(recipes_info) {
@@ -276,7 +276,6 @@ async function getRecipesPreview(recipes_ids_list) {
   }
 
 async function getSimilarRecipes(q, numtoReturn, cuisine, diet, intolerances) {
-    console.log("inside");
     const test =  await axios.get(`${api_domain}/complexSearch`, {
         params: {
           query: q,
@@ -287,18 +286,13 @@ async function getSimilarRecipes(q, numtoReturn, cuisine, diet, intolerances) {
           apiKey: process.env.spooncular_apiKey
         }
     });
-    console.log("1 step");
     let Relevant_results = test.data.results;
     let recipes_id_array = [];
 
 
-    //console.log(Relevant_results);
     Relevant_results.map((element) => recipes_id_array.push(element["id"])); //extracting the recipe ids into array
-    console.log(recipes_id_array);
 
     let finalResult = getRecipesPreview(recipes_id_array);
-    //console.log("this is the finalResult:!!!!!!!!!!!!");
-    console.log(finalResult);
     return finalResult;
 }
 
@@ -307,8 +301,9 @@ async function getSimilarRecipes(q, numtoReturn, cuisine, diet, intolerances) {
 
 exports.getRecipeDetails = getRecipeDetails;
 exports.getRandomRecipeeDetails = getRandomRecipeeDetails;
-exports.getLastRecipeeDetails = getLastRecipeeDetails;
-exports.markAsSeen = markAsSeen;
+// exports.getLastRecipeeDetails = getLastRecipeeDetails;
+// exports.markAsSeen = markAsSeen;
 exports.getSpecificDataFromRecipee = getSpecificDataFromRecipee;
 exports.getRecipePreviewFromRecipeId = getRecipePreviewFromRecipeId;
 exports.getSimilarRecipes = getSimilarRecipes;
+exports.getRecipePreviewFromRecipeId = getRecipePreviewFromRecipeId;

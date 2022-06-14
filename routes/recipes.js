@@ -2,6 +2,11 @@ var express = require("express");
 var router = express.Router();
 const recipes_utils = require("./utils/recipes_utils");
 
+
+
+
+
+
 router.get("/", (req, res) => res.send("im here"));
 
 /* 
@@ -69,25 +74,7 @@ router.get("/random/:numb", async (req, res, next) => {
   }
 });
 
-router.get("/lastSeenRecipe/:numb", async (req, res, next) => {
-  try {
-    let recipees = await recipes_utils.getLastRecipeeDetails(req.session.user_id,req.params.numb);
-    console.log(recipees)
-    res.status(200).send(recipees);
-  } catch (error) {
-    next(error);
-  }
-});
 
-router.post("/lastSeenRecipe", async (req, res, next) => {
-  try {
-    const recipeId = req.body.recipeId;
-    const recipees = await recipes_utils.markAsSeen(req.session.user_id, recipeId);
-    res.status(200).send("The Recipe was successfully saved as a last seen recipe");;
-  } catch (error) {
-    next(error);
-  }
-});
 
 
 

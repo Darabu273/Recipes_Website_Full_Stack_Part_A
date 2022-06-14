@@ -105,4 +105,24 @@ router.get("/family", async (req, res, next) => {
   }
 });
 
+router.get("/lastSeenRecipe/:numb", async (req, res, next) => {
+  try {
+    let recipees = await user_utils.getLastRecipeeDetails(req.session.user_id,req.params.numb);
+    console.log(recipees)
+    res.status(200).send(recipees);
+  } catch (error) {
+    next(error);
+  }
+});
+
+router.post("/lastSeenRecipe", async (req, res, next) => {
+  try {
+    const recipeId = req.body.recipeId;
+    const recipees = await user_utils.markAsSeen(req.session.user_id, recipeId);
+    res.status(200).send("The Recipe was successfully saved as a last seen recipe");;
+  } catch (error) {
+    next(error);
+  }
+});
+
 module.exports = router;

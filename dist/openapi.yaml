@@ -1,230 +1,555 @@
+---
 openapi: 3.0.0
 info:
-  title: Recipes api
-  description: API for recipes project
-  version: 1.0.1
+  title: Simple Inventory API
+  description: This is a simple API
+  contact:
+    email: hersko@post.bgu.ac.il
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
 servers:
-# local:
 - url: "http://127.0.0.1:3000"
-# remote:
-# - url: "http://132.72.65.211"
-  description: SwaggerHub API Auto Mocking hey
+  description: SwaggerHub API Auto Mocking
 tags:
-- name: Auth
-  description: All authentication related routes
-- name: Users
-  description: All the user's personal app info
-- name: Recipes
-  description: All reciepes general info
+- name: main
+  description: Start page - menu.
+- name: auth
+  description: Login,Logout and Register actions
+- name: recipes
+  description: recipes functions to get information related to recipes.
+- name: user
+  description: perform actions of a logged-in user. his favorites, personal and family recipes.
 paths:
-  /register:
+  /auth/Login:
     post:
       tags:
-      - Auth
-      summary: A new user from the client is added to the server
-      description: A JSON object contains all the details about the new user.
+      - auth
+      summary: User logged in to the system server.
+      operationId: Login
       requestBody:
-        description: Inventory item to add
+        description: logout as a user by passing credential
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/User'
-        required: true
-      responses:
-        "201":
-          description: A new user has been added
-        "400":
-          description: wrong input parameters
-  /login:
-    post:
-      tags:
-      - Auth
-      summary: Login an exist user
-      description: An exist user login to the system
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/LoginScheme'
-        required: true
+              $ref: '#/components/schemas/userLogin'
       responses:
         "200":
-          description: |
-            User was found in the DB and authenitcated successfully. The session ID is returned in a cookie named `session`.  You should include this cookie in subsequent requests
+          description: login succeeded
           headers:
             Set-Cookie:
               style: simple
               explode: false
               schema:
                 type: string
-                example: session=87s97sdhgf279293f8w0e9
+                example: session = Rh5GCnsw5Ktu37JjSm2r
         "401":
-          description: Authentication failed
-  /logout:
+          description: Username or Password incorrect
+  /auth/Logout:
     post:
       tags:
-        - Auth
-      summary: logout a user from the system and delete his cookie
+      - auth
+      summary: User logged out to the system server.
+      operationId: Logout
+      requestBody:
+        description: logout as a user by passing a username and delete the coockie.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/userLogout'
       responses:
         "200":
-          description: "the user has ben successfully logged out"
-  /users/favorites:
+          description: logout succeeded
+          headers:
+            Set-Cookie:
+              style: simple
+              explode: false
+              schema:
+                type: string
+                example: session need to add exmple like bardugo
+        "401":
+          description: Username or Password incorrect
+  /users/favorite:
     get:
       tags:
-      - Users
-      summary: Return the favorite recipes that were saved by user
-      description: Get an array of recipes that were saved by a specific user
+      - users
+      summary: get the favorite of the user
+      description: get all favorite according to the user_id
+      operationId: getfavorite
       responses:
         "200":
-          description: data about the user's favorites recipes returned
+          description: successful operation- favorite returned
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/RecipePreview'
+                  $ref: '#/components/schemas/recipePreview'
+        "400":
+          description: Invalid ID supplied
         "401":
-          description: user is not authorized
-      security:
-      - cookieAuth: []
+          description: Not connected to the Data Base
+        "402":
+          description: Request failed because not enough credit in the sponcular API
     post:
       tags:
-      - Users
-      summary: save recipe in the favorites list of a user
-      description: save recipe in the favorites list of a user
+      - users
+      summary: update a favorite with recipe id
+      description: add to the DB a recipe as favorite
+      operationId: setfavorite
       requestBody:
+        description: JSON object for register
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                reciepeId:
-                  type: string
-                  description: reciepe's id which the user saved
-                  example: 716429
+              $ref: '#/components/schemas/recipeId'
+        required: true
       responses:
         "200":
-          description: The Recipe successfully saved as favorite
+          description: successful operation, element added to favorite
+        "400":
+          description: Invalid ID supplied
         "401":
-          description: user is not authorized
-      security:
-      - cookieAuth: []
-  /recipes/{recipeId}:
+          description: Not connected to the Data Base
+  /users/myrecipe:
     get:
       tags:
-      - Recipes
-      summary: Return preview details on recipe by his ID
-      description: Return preview details on recipe by his ID
+      - users
+      summary: get all the personal recipes of the user according to the user_id
+      description: get all favorite
+      operationId: getmyrecipe
+      responses:
+        "200":
+          description: successful operation - personal recipe returned
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/recipePreview'
+        "400":
+          description: Invalid ID supplied
+        "401":
+          description: Not connected to the Data Base
+        "402":
+          description: Request failed because not enough credit in the sponcular API
+    post:
+      tags:
+      - users
+      summary: upload a personal recipe
+      description: upload a recipe as a personal recipe
+      operationId: setmyrecipe
+      requestBody:
+        description: JSON object for register
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/recipePreview'
+        required: true
+      responses:
+        "200":
+          description: successful operation, element added to mypersonal recipe
+        "400":
+          description: Invalid recipe supplied
+        "401":
+          description: Not connected to the Data Base
+  /users/lastSeenRecipe:
+    post:
+      tags:
+      - users
+      summary: mark a recipe as seen
+      description: mark a recipe as last seen
+      operationId: setmylastseenrecipe
+      requestBody:
+        description: JSON object for register
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/recipeId'
+        required: true
+      responses:
+        "200":
+          description: successful operation, element added to mypersonal recipe
+        "400":
+          description: Invalid recipe supplied
+        "401":
+          description: Not connected to the Data Base
+  /users/lastSeenRecipe/{number}:
+    get:
+      tags:
+      - users
+      summary: get the last recipes visited
+      description: get a numb last seen of recipe
+      operationId: getlastseenrecipe
       parameters:
-      - name: recipeId
+      - name: number
         in: path
-        description: recipe's id
+        description: numb recipes to return
         required: true
         style: simple
         explode: false
         schema:
           type: integer
+          format: int64
+        example: 3
       responses:
         "200":
-          description: data about the recipe
+          description: successful operation, numb last seen recipe returned
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RecipePreview'
+                $ref: '#/components/schemas/recipePreview'
+        "400":
+          description: Invalid parameter supplied
+        "401":
+          description: Not connected to the Data Base
+        "402":
+          description: Request failed because not enough credit in the sponcular API
+  /users/family:
+    get:
+      tags:
+      - users
+      summary: get all the personal recipes of the user according to the user_id
+      description: get all favorite
+      operationId: getfamily
+      responses:
+        "200":
+          description: successful operation - personal recipe returned
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/recipeFamily'
+        "400":
+          description: Invalid ID supplied
+        "401":
+          description: Not connected to the Data Base
+  /recipes/{recipeId}:
+    get:
+      tags:
+      - recipes
+      summary: search a recipe by its id
+      description: get a recipe by its id
+      operationId: getRecipeByID
+      parameters:
+      - name: recipeId
+        in: path
+        description: Id of recipe to return
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+        example: 637593
+      responses:
+        "200":
+          description: successful operation,recipe returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/recipeComplete'
+        "400":
+          description: Invalid Id supplied
+        "402":
+          description: Request failed because not enough credit in the sponcular API
         "404":
-          description: recipeId is not exists
+          description: Recipe not found
+  /recipes/random/{number}:
+    get:
+      tags:
+      - recipes
+      summary: get some random recipes according to the number given as parameter
+      description: get a numb random of recipe
+      operationId: random
+      parameters:
+      - name: number
+        in: path
+        description: numb recipes to return
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+        example: 3
+      responses:
+        "200":
+          description: successful operation, numb recipe returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/recipePreview'
+        "400":
+          description: Invalid parameter supplied
+        "402":
+          description: Request failed because not enough credit in the sponcular API
+        "404":
+          description: page not found
+  /recipes/search:
+    get:
+      tags:
+      - recipes
+      summary: get the last recipes visited
+      description: get a numb last seen of recipe
+      operationId: getsearch
+      parameters:
+      - name: query
+        in: query
+        description: query recieve as a free text in the function
+        required: true
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: gefilte fish
+      - name: num
+        in: query
+        description: num recieve to know how much recipe to retrieve
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: integer
+          example: 5
+      - name: cuisine
+        in: query
+        description: type of cuisine to indicate to make a search more speicific
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: Jewish
+      - name: diet
+        in: query
+        description: type of cuisine to indicate to make a search more specific
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: Vegan
+      - name: intolerances
+        in: query
+        description: type of intolerances to indicate to make a search more specific
+        required: false
+        style: form
+        explode: true
+        schema:
+          type: string
+          example: peanuts
+      responses:
+        "200":
+          description: successful operation, numb last seen recipe returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/recipePreview'
+        "400":
+          description: Invalid parameter supplied
+        "402":
+          description: Request failed because not enough credit in the sponcular API
+        "404":
+          description: page not found
 components:
   schemas:
-    User:
+    userLogin:
+      required:
+      - password
+      - username
       type: object
       properties:
         username:
           maxLength: 8
           minLength: 3
           type: string
-          description: username conatins between 3 to 8 letters only
-          example: my_name
-        firstname:
-          type: string
-          description: user's first name
-          example: my_first_name
-        lastname:
-          type: string
-          description: user's last name
-          example: my_last_name
-        country:
-          type: string
-          description: user's country
-          example: Israel
+          example: ido3010
         password:
-          maxLength: 10
-          minLength: 5
           type: string
-          description: password conatins between 5 to 10 chars, at least one of them
-            is a number and a special char
-          format: password
-          example: my_name@12
-        email:
-          pattern: email
-          type: string
-          description: user's email
-          example: my_name12@gmail.com
-        # image-url:
-        #   pattern: URL
-        #   type: string
-        #   description: URL for the user's image
-        #   example: https://cloudinary.com/
-      description: Model containing user info
-    LoginScheme:
+          example: ido123
+    userLogout:
+      required:
+      - username
       type: object
       properties:
         username:
           maxLength: 8
           minLength: 3
           type: string
-          description: username conatins letters only
-        password:
-          maxLength: 10
-          minLength: 5
-          description: password conatins at least one number and one special char
-          format: password
-      example:
-        username: my_name
-        password: my_name@12
-    RecipePreview:
+          example: ido3010
+    recipeId:
+      required:
+      - recipeId
+      type: object
+      properties:
+        recipeId:
+          type: integer
+          example: 5
+    recipePreview:
+      required:
+      - flagInFavorite
+      - flagInLastSeen
+      - glutenFree
+      - id
+      - image
+      - popularity
+      - readyInMinutes
+      - title
+      - vegan
+      - vegetarian
       type: object
       properties:
         id:
           type: integer
-          description: recipe identifier
-          example: 102
+          example: 634070
         title:
+          minLength: 2
           type: string
-          description: recipe name
-          example: Simple Macaroni and Cheese
-        image:
-          type: string
-          description: recipe image
-          format: URL
-          example: https://spoonacular.com/recipeimages/655455-566x370.jpg
+          example: Banana Creme Brulee
         readyInMinutes:
           type: integer
-          description: the time takes to make this recipe
-          example: 45
+          example: 63
+        image:
+          type: string
+          example: "50"
         popularity:
           type: integer
-          description: how many likes got this recipe
-          example: 5987
-        vegetarian:
-          type: boolean
-          description: indication if the recipe is vegetarian
-          example: false
+          example: 5
         vegan:
           type: boolean
-          description: indication if the recipe is vegan
           example: false
+        vegetarian:
+          type: boolean
+          example: true
         glutenFree:
           type: boolean
-          description: indication if the recipe is gluten free
+          example: true
+        flagInFavorite:
+          type: boolean
           example: false
-  
+        flagInLastSeen:
+          type: boolean
+          example: true
+    recipeComplete:
+      required:
+      - flagInFavorite
+      - flagInLastSeen
+      - glutenFree
+      - id
+      - image
+      - ingredients
+      - instructions
+      - popularity
+      - readyInMinutes
+      - servings
+      - title
+      - vegan
+      - vegetarian
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 634070
+        title:
+          minLength: 2
+          type: string
+          example: Banana Creme Brulee
+        readyInMinutes:
+          type: integer
+          example: 63
+        image:
+          type: string
+          example: "50"
+        popularity:
+          type: integer
+          example: 5
+        vegan:
+          type: boolean
+          example: false
+        vegetarian:
+          type: boolean
+          example: true
+        glutenFree:
+          type: boolean
+          example: true
+        ingredients:
+          minLength: 2
+          type: string
+          example: Banana, Cacao, Sugar
+        servings:
+          type: integer
+          example: 5
+        instructions:
+          minLength: 2
+          type: string
+          example: peal of the Banana, melt it with cacao and sugar
+        flagInFavorite:
+          type: boolean
+          example: false
+        flagInLastSeen:
+          type: boolean
+          example: true
+    recipeFamily:
+      required:
+      - glutenFree
+      - id
+      - image
+      - ingredients
+      - instructions
+      - popularity
+      - readyInMinutes
+      - servings
+      - title
+      - vegan
+      - vegetarian
+      - whenWePrepareIt
+      - whoItBelongTo
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 634070
+        title:
+          minLength: 2
+          type: string
+          example: Banana Creme Brulee
+        readyInMinutes:
+          type: integer
+          example: 63
+        image:
+          type: string
+          example: "50"
+        popularity:
+          type: integer
+          example: 5
+        vegan:
+          type: boolean
+          example: false
+        vegetarian:
+          type: boolean
+          example: true
+        glutenFree:
+          type: boolean
+          example: true
+        ingredients:
+          minLength: 2
+          type: string
+          example: Banana, Cacao, Sugar
+        servings:
+          type: integer
+          example: 5
+        instructions:
+          minLength: 2
+          type: string
+          example: peal of the Banana, melt it with cacao and sugar
+        whenWePrepareIt:
+          minLength: 2
+          type: string
+          example: When the night has come And the land is dark
+        whoItBelongTo:
+          minLength: 2
+          type: string
+          example: Savta chana kapara on her
