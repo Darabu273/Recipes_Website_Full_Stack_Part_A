@@ -39,6 +39,8 @@ async function getRecipeDetails(recipe_id, user_id) {
     glutenFree,
     servings,
     instructions,
+    analyzedInstructions,
+    extendedIngredients,
   } = recipe_info.data;
   let { ingredients } = recipe_ingred.data;
   
@@ -68,8 +70,10 @@ async function getRecipeDetails(recipe_id, user_id) {
     vegetarian: vegetarian,
     glutenFree: glutenFree,
     ingredients: ingredients,
+    extendedIngredients: extendedIngredients,
     servings: servings,
     instructions: instructions,
+    analyzedInstructions: analyzedInstructions,
     flagInFavorite : flagFavorite,
     flagInLastSeen : flagLastSeen
   };
@@ -135,7 +139,8 @@ async function getRecipePreviewandInstructionFromRecipeId(recipe_id, user_id) {
     vegan,
     vegetarian,
     glutenFree,
-    instructions
+    instructions,
+    analyzedInstructions
   } = recipe_info.data;
   
   
@@ -165,6 +170,7 @@ async function getRecipePreviewandInstructionFromRecipeId(recipe_id, user_id) {
     vegetarian: vegetarian,
     glutenFree: glutenFree,
     instructions: instructions,
+    analyzedInstructions: analyzedInstructions,
     flagInFavorite : flagFavorite,
     flagInLastSeen : flagLastSeen
   };
@@ -299,6 +305,7 @@ async function getRandomRecipeeDetails(numb, user_id) {
             vegetarian,
             glutenFree,
             instructions,
+            analyzedInstructions,
         } = data;
 
         // //check if this recipe is in favorite 
@@ -329,7 +336,8 @@ async function getRandomRecipeeDetails(numb, user_id) {
             vegan: vegan,
             vegetarian: vegetarian,
             glutenFree: glutenFree,
-            instructions: instructions
+            instructions: instructions,
+            analyzedInstructions: analyzedInstructions
             // flagInFavorite : flagFavorite,
             // flagInLastSeen : flagLastSeen
         }

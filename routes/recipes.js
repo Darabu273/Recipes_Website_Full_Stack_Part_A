@@ -53,6 +53,7 @@ router.get("/search", async (req, res, next) => {
  * - recipe's ingredient list
  * - number of servings
  * - instructions
+ * - analyzedInstructions dar add after
  * */
 router.get("/:recipeId", async (req, res, next) => {
   try {

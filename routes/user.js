@@ -75,7 +75,9 @@ router.post("/myrecipe", async (req, res, next) => {
     const glutenFree = req.body.glutenFree;
     const servings = req.body.servings;
     const Instructions = req.body.Instructions;
+    //I didnt add analyzedInstructions to myrecipe we need rememder to update the swagger.
     const IngredientsList = req.body.IngredientsList;
+    //I didnt add extendedIngredients --need to check how it is diffrent from what we do. and if we keep it neww to update the swagger
 
     await user_utils.addPersonalRecipee(
       user_id,
@@ -88,6 +90,7 @@ router.post("/myrecipe", async (req, res, next) => {
       glutenFree,
       servings,
       Instructions,
+      analyzedInstructions,
       IngredientsList
     );
     res.status(200).send("The Recipe was successfully saved as a personal recipe");
@@ -114,6 +117,7 @@ router.get("/lastSeenRecipe/:numb", async (req, res, next) => {
     next(error);
   }
 });
+
 
 router.post("/lastSeenRecipe", async (req, res, next) => {
   try {
