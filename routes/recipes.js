@@ -1,11 +1,7 @@
 var express = require("express");
 var router = express.Router();
 const recipes_utils = require("./utils/recipes_utils");
-
-
-
-
-
+ 
 
 router.get("/", (req, res) => res.send("im here"));
 
@@ -20,22 +16,25 @@ router.get("/", (req, res) => res.send("im here"));
 */
 router.get("/search", async (req, res, next) => {
   try {
-    // numtoReturn = req.query.num;
+
     if (req.query.num == 5 || req.query.num == 10 || req.query.num == 15) {
       numtoReturn = req.query.number;
     }
     else {
-      numtoReturn = 5;//defual value.
+      numtoReturn = 5; //defual value.
     }
-    console.log(numtoReturn);
+
+    /* 
+*/
+    // User that logged in means he has session.user_id and we will save his last search. 
+    if (req.session && req.session.user_id) {
+      req.session.last_search = req.query.query;
+    }
+
     queryWords = req.query.query;
-    console.log(queryWords);
     cuisine = req.query.cuisine;
-    console.log(cuisine);
     diet = req.query.diet;
-    console.log(diet);
     intolerances = req.query.intolerances;
-    console.log(intolerances);
     user_id = req.session.user_id;
 
     let finalResult = await recipes_utils.getSimilarRecipes(queryWords, numtoReturn, cuisine, diet, intolerances, user_id);
@@ -47,6 +46,22 @@ router.get("/search", async (req, res, next) => {
   }
 });
 
+/**Return the last search of user that logged in and search recipe.
+ * But, if user logged in and didn't search someting or if user is a guest (no session.user_id) 
+ * We will return undefined and in the client side we return empty result for those cases. 
+ */
+router.get("/lastSearch", async (req, res, next) => {
+  let ans;
+  try {
+    if (req.session && req.session.user_id) {
+      ans = req.session.last_search;
+    }
+    res.status(200).send(ans);
+
+  } catch (error) {
+    next(error)
+  }
+});
 
 /* This path returns a full details of a recipe by its id:
  * - Details of preview details
@@ -75,9 +90,5 @@ router.get("/random/:numb", async (req, res, next) => {
     next(error);
   }
 });
-
-
-
-
 
 module.exports = router;
