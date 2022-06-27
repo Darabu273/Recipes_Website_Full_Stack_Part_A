@@ -77,7 +77,6 @@ async function getPersonalRecipes(user_id) {
   );
   return arr;
 }
-
 async function getMyRecipeeDetails(user_id) {
   //get the personal recipee from db
   const personal_recipes_from_db = await getPersonalRecipes(user_id);
@@ -86,6 +85,23 @@ async function getMyRecipeeDetails(user_id) {
   //personal_recipes_from_db.map((element) => recipes_id_array.push(element.recipe_id)); //extracting the recipe ids into array
   return result;
 }
+
+
+async function getSpecificPersonalRecipeWithRecipeId(user_id, recipe_id) {
+  let arr = await DButils.execQuery(
+    `SELECT * FROM mydb.personalrecipee where user_id='${user_id}' and id='${recipe_id}' LIMIT 1 `
+  );
+  return arr;
+}
+async function getMyRecipeeDetailWithRecipeId(user_id, recipe_id) {
+  //get the personal recipee from db
+  const personal_recipes_from_db = await getSpecificPersonalRecipeWithRecipeId(user_id,recipe_id);
+  result = Promise.all(personal_recipes_from_db);
+  //let recipes_id_array = [];
+  //personal_recipes_from_db.map((element) => recipes_id_array.push(element.recipe_id)); //extracting the recipe ids into array
+  return result;
+}
+
 
 async function getFamilyRecipes(user_id) {
     let arr = await DButils.execQuery(
@@ -115,6 +131,7 @@ exports.markAsFavorite = markAsFavorite;
 exports.getFavoriteRecipes = getFavoriteRecipes;
 exports.getFavoriteRecipeeDetails = getFavoriteRecipeeDetails;
 exports.getMyRecipeeDetails = getMyRecipeeDetails;
+exports.getMyRecipeeDetailWithRecipeId = getMyRecipeeDetailWithRecipeId;
 exports.addPersonalRecipee = addPersonalRecipee;
 exports.getMyFamilyRecipeeDetails = getMyFamilyRecipeeDetails;
 exports.getLastRecipeeDetails = getLastRecipeeDetails;
