@@ -54,6 +54,15 @@ router.get("/favorites", async (req, res, next) => {
   }
 });
 
+router.get("/myrecipe/:recipeId", async (req, res, next) => {
+  try {
+    const recipees = await user_utils.getMyRecipeeDetailWithRecipeId(req.session.user_id, req.params.recipeId);
+    res.send(recipees);
+  } catch (error) {
+    next(error);
+  }
+});
+
 router.get("/myrecipe", async (req, res, next) => {
   try {
     const recipees = await user_utils.getMyRecipeeDetails(req.session.user_id);
@@ -90,7 +99,7 @@ router.post("/myrecipe", async (req, res, next) => {
       glutenFree,
       servings,
       Instructions,
-      analyzedInstructions,
+      //analyzedInstructions,
       IngredientsList
     );
     res.status(200).send("The Recipe was successfully saved as a personal recipe");
