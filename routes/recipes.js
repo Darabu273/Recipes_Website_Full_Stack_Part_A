@@ -16,14 +16,6 @@ router.get("/", (req, res) => res.send("im here"));
 */
 router.get("/search", async (req, res, next) => {
   try {
-
-    if (req.query.num == 5 || req.query.num == 10 || req.query.num == 15) {
-      numtoReturn = req.query.number;
-    }
-    else {
-      numtoReturn = 5; //defual value.
-    }
-
     /* 
 */
     // User that logged in means he has session.user_id and we will save his last search. 
@@ -32,10 +24,12 @@ router.get("/search", async (req, res, next) => {
     }
 
     queryWords = req.query.query;
+    numtoReturn = req.query.num;
     cuisine = req.query.cuisine;
     diet = req.query.diet;
     intolerances = req.query.intolerances;
     user_id = req.session.user_id;
+    console.log(numtoReturn);
 
     let finalResult = await recipes_utils.getSimilarRecipes(queryWords, numtoReturn, cuisine, diet, intolerances, user_id);
     res.status(200).send(finalResult);
