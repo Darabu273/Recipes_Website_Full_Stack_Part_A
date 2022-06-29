@@ -1,8 +1,8 @@
 ---
 openapi: 3.0.0
 info:
-  title: Simple Inventory API
-  description: This is a simple API
+  title: API of assignment 3
+  description: This is the API of assignment 3 in the web developement course, Ben-Gurion University of the Negev. (connection to Sponcular API and local mysql DB)
   contact:
     email: hersko@post.bgu.ac.il
   license:
@@ -13,8 +13,6 @@ servers:
 - url: "http://127.0.0.1:3000"
   description: SwaggerHub API Auto Mocking
 tags:
-- name: main
-  description: Start page - menu.
 - name: auth
   description: Login,Logout and Register actions
 - name: recipes
@@ -142,7 +140,7 @@ paths:
       - users
       summary: search a recipe from the personal recipes by its id
       description: get a personal's recipe by its id
-      operationId: getRecipeByID
+      operationId: getPersonalRecipeByID
       parameters:
       - name: recipeId
         in: path
@@ -275,6 +273,26 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/recipeFamily'
+        "400":
+          description: Invalid ID supplied
+        "401":
+          description: Not connected to the Data Base
+  /users/lastSearch:
+    get:
+      tags:
+      - users
+      summary: get the last search of the connected user
+      description: get the last search terms of the connected user
+      operationId: getLastSearch
+      responses:
+        "200":
+          description: successful operation - last searched terms returned
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/lastTerms'
         "400":
           description: Invalid ID supplied
         "401":
@@ -700,3 +718,12 @@ components:
           minLength: 2
           type: string
           example: Savta chana kapara on her
+    lastTerms:
+      required:
+      - term
+      type: object
+      properties:
+        term:
+          type: string
+          example: Amsterdam cookies of mommy touch
+
