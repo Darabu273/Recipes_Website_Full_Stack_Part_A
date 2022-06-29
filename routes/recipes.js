@@ -16,8 +16,6 @@ router.get("/", (req, res) => res.send("im here"));
 */
 router.get("/search", async (req, res, next) => {
   try {
-    /* 
-*/
     // User that logged in means he has session.user_id and we will save his last search. 
     if (req.session && req.session.user_id) {
       req.session.last_search = req.query.query;
@@ -40,22 +38,7 @@ router.get("/search", async (req, res, next) => {
   }
 });
 
-/**Return the last search of user that logged in and search recipe.
- * But, if user logged in and didn't search someting or if user is a guest (no session.user_id) 
- * We will return undefined and in the client side we return empty result for those cases. 
- */
-router.get("/lastSearch", async (req, res, next) => {
-  let ans;
-  try {
-    if (req.session && req.session.user_id) {
-      ans = req.session.last_search;
-    }
-    res.status(200).send(ans);
 
-  } catch (error) {
-    next(error)
-  }
-});
 
 /* This path returns a full details of a recipe by its id:
  * - Details of preview details

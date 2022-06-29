@@ -138,4 +138,22 @@ router.post("/lastSeenRecipe", async (req, res, next) => {
   }
 });
 
+
+/**Return the last search of user that logged in and search recipe.
+ * But, if user logged in and didn't search someting or if user is a guest (no session.user_id) 
+ * We will return undefined and in the client side we return empty result for those cases. 
+ */
+ router.get("/lastSearch", async (req, res, next) => {
+  let ans;
+  try {
+    if (req.session && req.session.user_id) {
+      ans = req.session.last_search;
+    }
+    res.status(200).send(ans);
+
+  } catch (error) {
+    next(error)
+  }
+});
+
 module.exports = router;
