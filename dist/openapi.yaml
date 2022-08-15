@@ -1,8 +1,8 @@
 ---
 openapi: 3.0.0
 info:
-  title: Simple Inventory API
-  description: This is a simple API
+  title: API of assignment 3
+  description: This is the API of assignment 3 in the web developement course, Ben-Gurion University of the Negev. (connection to Sponcular API and local mysql DB)
   contact:
     email: hersko@post.bgu.ac.il
   license:
@@ -13,13 +13,11 @@ servers:
 - url: "http://127.0.0.1:3000"
   description: SwaggerHub API Auto Mocking
 tags:
-- name: main
-  description: Start page - menu.
 - name: auth
   description: Login,Logout and Register actions
 - name: recipes
   description: recipes functions to get information related to recipes.
-- name: user
+- name: users
   description: perform actions of a logged-in user. his favorites, last seen, personal and family recipes.
 paths:
   /auth/Login:
@@ -136,6 +134,35 @@ paths:
           description: Invalid ID supplied
         "401":
           description: Not connected to the Data Base
+  /users/myrecipe/{recipeId}:
+    get:
+      tags:
+      - users
+      summary: search a recipe from the personal recipes by its id
+      description: get a personal's recipe by its id
+      operationId: getPersonalRecipeByID
+      parameters:
+      - name: recipeId
+        in: path
+        description: Id of recipe to return
+        required: true
+        style: simple
+        explode: false
+        schema:
+          type: integer
+          format: int64
+        example: 8
+      responses:
+        "200":
+          description: successful operation,recipe returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/recipeCompletePersonal'
+        "400":
+          description: Invalid Id supplied
+        "404":
+          description: Recipe not found
   /users/myrecipe:
     get:
       tags:
@@ -151,7 +178,7 @@ paths:
               schema:
                 type: array
                 items:
-                  $ref: '#/components/schemas/recipePreview'
+                  $ref: '#/components/schemas/recipePreviewPersonal'
         "400":
           description: Invalid ID supplied
         "401":
@@ -169,7 +196,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/recipePreview'
+              $ref: '#/components/schemas/recipePreviewPersonal'
         required: true
       responses:
         "200":
@@ -246,6 +273,26 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/recipeFamily'
+        "400":
+          description: Invalid ID supplied
+        "401":
+          description: Not connected to the Data Base
+  /users/lastSearch:
+    get:
+      tags:
+      - users
+      summary: get the last search of the connected user
+      description: get the last search terms of the connected user
+      operationId: getLastSearch
+      responses:
+        "200":
+          description: successful operation - last searched terms returned
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/lastTerms'
         "400":
           description: Invalid ID supplied
         "401":
@@ -472,6 +519,8 @@ components:
       - title
       - vegan
       - vegetarian
+      - analyzedInstructions
+      - extendedIngredients
       type: object
       properties:
         id:
@@ -506,16 +555,108 @@ components:
         servings:
           type: integer
           example: 5
+        extendedIngredients:
+          type: string
+          example: Banana 100 gram, cacao 1 cup, sugar 1 cup
         instructions:
           minLength: 2
           type: string
           example: peal of the Banana, melt it with cacao and sugar
+        analyzedInstructions:
+          type: string
+          example: 1.peal of the banana 2.melt it with cacao and sugar
         flagInFavorite:
           type: boolean
           example: false
         flagInLastSeen:
           type: boolean
           example: true
+    recipePreviewPersonal:
+      required:
+      - glutenFree
+      - id
+      - image
+      - popularity
+      - readyInMinutes
+      - title
+      - vegan
+      - vegetarian
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 8
+        title:
+          type: string
+          example: Gefilte Fish
+        readyInMinutes:
+          type: integer
+          example: 63
+        image:
+          type: string
+          example: "https://dar_abu_told_me_she_loves_gefilte_fish.com/picture"
+        popularity:
+          type: integer
+          example: 1
+        vegan:
+          type: string
+          example: "false"
+        vegetarian:
+          type: string
+          example: "true"
+        glutenFree:
+          type: string
+          example: "true"
+    recipeCompletePersonal:
+      required:
+      - glutenFree
+      - id
+      - image
+      - ingredients
+      - instructions
+      - popularity
+      - readyInMinutes
+      - servings
+      - title
+      - vegan
+      - vegetarian
+      type: object
+      properties:
+        id:
+          type: integer
+          example: 8
+        title:
+          type: string
+          example: Gefilte Fish
+        readyInMinutes:
+          type: integer
+          example: 63
+        image:
+          type: string
+          example: "https://dar_abu_told_me_she_loves_gefilte_fish.com/picture"
+        popularity:
+          type: integer
+          example: 1
+        vegan:
+          type: string
+          example: "false"
+        vegetarian:
+          type: string
+          example: "true"
+        glutenFree:
+          type: string
+          example: "true"
+        ingredients:
+          minLength: 2
+          type: string
+          example: karpion, carrots, salt
+        servings:
+          type: integer
+          example: 5
+        instructions:
+          minLength: 2
+          type: string
+          example: peal of the karpion, call your grandma
     recipeFamily:
       required:
       - glutenFree
@@ -577,3 +718,12 @@ components:
           minLength: 2
           type: string
           example: Savta chana kapara on her
+    lastTerms:
+      required:
+      - term
+      type: object
+      properties:
+        term:
+          type: string
+          example: Amsterdam cookies of mommy touch
+
