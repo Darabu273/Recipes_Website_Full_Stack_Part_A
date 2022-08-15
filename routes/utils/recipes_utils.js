@@ -69,6 +69,7 @@ async function getRecipeDetails(recipe_id, user_id) {
     vegan: vegan,
     vegetarian: vegetarian,
     glutenFree: glutenFree,
+    servings: servings,
     ingredients: ingredients,
     extendedIngredients: extendedIngredients,
     servings: servings,
@@ -91,7 +92,8 @@ async function getRecipePreviewFromRecipeId(recipe_id, user_id) {
       aggregateLikes,
       vegan,
       vegetarian,
-      glutenFree
+      glutenFree,
+      servings
     } = recipe_info.data;
     
 
@@ -119,6 +121,7 @@ async function getRecipePreviewFromRecipeId(recipe_id, user_id) {
       vegan: vegan,
       vegetarian: vegetarian,
       glutenFree: glutenFree,
+      servings: servings,
       flagInFavorite : flagFavorite,
       flagInLastSeen : flagLastSeen
     };
@@ -139,6 +142,7 @@ async function getRecipePreviewandInstructionFromRecipeId(recipe_id, user_id) {
     vegan,
     vegetarian,
     glutenFree,
+    servings,
     instructions,
     analyzedInstructions
   } = recipe_info.data;
@@ -169,6 +173,7 @@ async function getRecipePreviewandInstructionFromRecipeId(recipe_id, user_id) {
     vegan: vegan,
     vegetarian: vegetarian,
     glutenFree: glutenFree,
+    servings: servings,
     instructions: instructions,
     analyzedInstructions: analyzedInstructions,
     flagInFavorite : flagFavorite,
@@ -198,6 +203,7 @@ async function getSpecificDataFromRecipee(recipee, user_id) {
     vegan,
     vegetarian,
     glutenFree,
+    servings,
   } = recipee;
 
   //check if this recipe is in favorite 
@@ -224,6 +230,7 @@ async function getSpecificDataFromRecipee(recipee, user_id) {
     vegan: vegan,
     vegetarian: vegetarian,
     glutenFree: glutenFree,
+    servings: servings,
     flagInFavorite : flagFavorite,
     flagInLastSeen : flagLastSeen
   };
@@ -304,6 +311,7 @@ async function getRandomRecipeeDetails(numb, user_id) {
             vegan,
             vegetarian,
             glutenFree,
+            servings,
             instructions,
             analyzedInstructions,
         } = data;
@@ -336,6 +344,7 @@ async function getRandomRecipeeDetails(numb, user_id) {
             vegan: vegan,
             vegetarian: vegetarian,
             glutenFree: glutenFree,
+            servings: servings,
             instructions: instructions,
             analyzedInstructions: analyzedInstructions
             // flagInFavorite : flagFavorite,

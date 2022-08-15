@@ -120,7 +120,7 @@ router.get("/family", async (req, res, next) => {
 router.get("/lastSeenRecipe/:numb", async (req, res, next) => {
   try {
     let recipees = await user_utils.getLastRecipeeDetails(req.session.user_id,req.params.numb);
-    console.log(recipees)
+    //console.log(recipees)
     res.status(200).send(recipees);
   } catch (error) {
     next(error);
@@ -144,15 +144,14 @@ router.post("/lastSeenRecipe", async (req, res, next) => {
  * We will return undefined and in the client side we return empty result for those cases. 
  */
  router.get("/lastSearch", async (req, res, next) => {
-  let ans;
   try {
     if (req.session && req.session.user_id) {
-      ans = req.session.last_search;
+      console.log(req.session.last_search);
+      res.status(200).send(req.session.last_search);
     }
-    res.status(200).send(ans);
-
   } catch (error) {
-    next(error)
+    
+     next(error)
   }
 });
 
