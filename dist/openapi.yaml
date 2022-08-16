@@ -20,14 +20,14 @@ tags:
 - name: users
   description: perform actions of a logged-in user. his favorites, last seen, personal and family recipes.
 paths:
-  /auth/Login:
+  /Login:
     post:
       tags:
       - auth
       summary: User logged in to the system server.
       operationId: Login
       requestBody:
-        description: logout as a user by passing credential
+        description: Login as a user by passing credential
         content:
           application/json:
             schema:
@@ -44,18 +44,12 @@ paths:
                 example: session = Rh5GCnsw5Ktu37JjSm2r
         "401":
           description: Username or Password incorrect
-  /auth/Logout:
+  /Logout:
     post:
       tags:
       - auth
       summary: User logged out to the system server.
       operationId: Logout
-      requestBody:
-        description: logout as a user by passing a username and delete the coockie.
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/userLogout'
       responses:
         "200":
           description: logout succeeded
@@ -68,7 +62,7 @@ paths:
                 example: session need to add exmple like bardugo
         "401":
           description: Username or Password incorrect
-  /auth/Register:
+  /Register:
     post:
       tags:
       - auth
@@ -437,20 +431,10 @@ components:
           maxLength: 8
           minLength: 3
           type: string
-          example: ido3010
+          example: Ido
         password:
           type: string
-          example: ido123
-    userLogout:
-      required:
-      - username
-      type: object
-      properties:
-        username:
-          maxLength: 8
-          minLength: 3
-          type: string
-          example: ido3010
+          example: Ido123
     recipeId:
       required:
       - recipeId
