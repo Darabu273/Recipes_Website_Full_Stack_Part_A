@@ -1,8 +1,9 @@
 ## Assignment3.2 - Backend
 
 ## Authors
-Ido Hersk - 204809867
 Dar Abu - 316294032
+
+Ido Hersk - 204809867
 
 ## Documentation
 The project is documented by the Swagger : https://app.swaggerhub.com/apis-docs/idohersko/API3_2/1.0.0
