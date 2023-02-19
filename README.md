@@ -1,8 +1,7 @@
 ## Assignment3.2 - Backend
 
 ## Authors
-ido Hersk - 204809867
-
+Ido Hersk - 204809867
 Dar Abu - 316294032
 
 ## Documentation
