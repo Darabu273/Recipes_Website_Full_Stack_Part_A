@@ -19,3 +19,6 @@ To run the server on your local environment:
 4. Run without debugging with nodeJS
 5. go to http://localhost:3000
 6. enjoy
+
+
+**Part B of the project: https://github.com/Darabu273/Recipes_Website_Full_Stack_Part_B
